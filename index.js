@@ -2,7 +2,7 @@ const  Discord = require("discord.js");
 require("dotenv").config();
 const bot = new Discord.Client();
 
-const ytdl = require("discord-ytdl-core");
+const ytdl = require("ytdl-core");
 
 var servers = {}
 
@@ -15,26 +15,31 @@ bot.on("message", (message) => {
 
     const source = ytdl(server.queue[0], {
       filter: "audioonly",
-      quality: "highestaudio",
+      //quality: "highestaudio",
       //highWaterMark: 1 << 25,
-      opusEncoded: true,
+      //opusEncoded: true,
     });
 
-    server.dispatcher = connection.play(source , { type: "opus" , volume : 1 });
+    server.dispatcher = connection.play(source);
 
     server.queue.shift();
 
-    server.dispatcher.on("end", () =>{
+    server.dispatcher.on("finish", () =>{
+      console.log("Queue end")
       if(server.queue[0]){
         play(connection, message);
+        console.log("NExt")
       }else{
         connection.disconnect();
+        console.log("Disconnecting")
       }
     })
   }
 
   function skip(){
-    servers[message.guild.id].dispatcher.end();
+    var server = servers[message.guild.id];
+    console.log(server)
+    if(server.dispatcher) server.dispatcher.end();
   }
 
   function stop(){
@@ -69,6 +74,9 @@ bot.on("message", (message) => {
       
    case "skip":
       skip();
+     break;
+     case "stop":
+      stop();
      break;
   }
 });
