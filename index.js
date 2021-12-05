@@ -12,7 +12,7 @@ const youtube = new YouTubeAPI(process.env.YT_TOKEN);
 var servers = {};
 
 function preCheck(message, url) {
-  message.delete({ timeout: 2000 });
+  //message.delete({ timeout: 2000 });
   if(!message.content.includes("youtube.com")) return message.channel.send(
     "Я тимчасово не підтримую пошук треків. Використайте URL посилання"
   );
@@ -85,7 +85,7 @@ function playVoice(connection, message) {
   server.queue.url.shift();
   server.queue.reuested.shift();
   server.dispatcher.on("finish", () => {
-    if(servers[message.guild.id].last_message) servers[message.guild.id].last_message.reaction.removeAll();
+    if(server.last_message) server.last_message.reactions.removeAll();
     if (server.queue.url[0]) {
       playVoice(connection, message);
     } else {
@@ -135,11 +135,11 @@ async function logTrack(message, url, author) {
     )
     .then((embedMessage) => {
       servers[message.guild.id].last_message = embedMessage;
-      reavtionPanel(embedMessage);
+      reactionPanel(embedMessage);
     });
 }
 
-function reavtionPanel(embed) {
+function reactionPanel(embed) {
   embed.react("⏮");
   embed.react("⏹️");
   embed.react("⏭");
@@ -172,7 +172,7 @@ bot.on("messageReactionAdd", (reaction, user) => {
     case "⏮":
       break;
     case "⏹️":
-      skip(stop.message);
+      skip(reaction.message);
       break;
     case "⏭":
       skip(reaction.message);
@@ -180,11 +180,16 @@ bot.on("messageReactionAdd", (reaction, user) => {
   }
 });
 
-bot.on("message", (message)=>{
-  if(message.content == "1dell"){
-  message.delete({ timeout: 2000 });
-  }
+
+bot.on("message" , (message) =>{
+if(message.content =="test"){
+  reactionPanel(message)
+  setTimeout(() => {
+    message.reactions.removeAll();
+  }, 2500);
+}
 })
+
 
 bot.on("ready", () => {
   console.log(`Logged in as ${bot.user.tag}`);
