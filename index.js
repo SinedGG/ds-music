@@ -125,6 +125,16 @@ function stop(message) {
   servers[message.guild.id].dispatcher.end();
 }
 
+function pause(message) {
+  servers[message.guild.id].dispatcher.pause();
+  console.log("pause");
+}
+
+function resume(message) {
+  servers[message.guild.id].dispatcher.resume();
+  console.log("resume");
+}
+
 function logPlaylist(message, count){
   message.channel.send(`В чергу додано ${count} записів `)
 }
@@ -136,7 +146,7 @@ async function logTrack(message, url, author) {
       .setColor("#f6971c")
       .setAuthor(
         "Зараз грає",
-        "https://cdn.dribbble.com/users/1366755/screenshots/6493370/attachments/1388539/player.gif?compress=1&resize=400x300"
+        "https://img.icons8.com/office/16/000000/cd--v2.gif"
       )
       .setThumbnail(
         ytdata.player_response.videoDetails.thumbnail.thumbnails[0].url
@@ -151,7 +161,15 @@ async function logTrack(message, url, author) {
       .addField("Запит", author, true)
       .setTimestamp()
       .setFooter("SDED Community ")
-  );
+  ).then((embedMessage )=>{
+    reavtionPanel(embedMessage);
+  });
+}
+
+function reavtionPanel(embed){
+  embed.react("⏹️");
+  embed.react("⏹️");
+  embed.react("⏹️");
 }
 
 bot.on("message", (message) => {
@@ -171,8 +189,24 @@ bot.on("message", (message) => {
     case "stop":
       stop(message);
       break;
+    case "pause":
+      pause(message);
+      break;
+    case "resume":
+      resume(message);
+      console.log("resume")
+      break;
   }
 });
+
+
+bot.on("message",(message) =>{
+  if(message.content == "ch"){
+
+      var test = bot.voice.connections.size
+      console.log(test)
+}
+})
 
 
 bot.on("ready", () => {
