@@ -182,16 +182,6 @@ bot.on("messageReactionAdd", (reaction, user) => {
 });
 
 
-bot.on("message" , (message) =>{
-if(message.content =="test"){
-  reactionPanel(message)
-  setTimeout(() => {
-    message.reactions.removeAll();
-  }, 2500);
-}
-})
-
-
 bot.on("ready", () => {
   console.log(`Logged in as ${bot.user.tag}`);
 });
