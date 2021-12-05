@@ -11,8 +11,11 @@ const youtube = new YouTubeAPI(process.env.YT_TOKEN);
 
 var servers = {};
 
-function preCheck(message, url ){
-
+function preCheck(message, url) {
+  message.delete({ timeout: 2000 });
+  if(!message.content.includes("youtube.com")) return message.channel.send(
+    "Я тимчасово не підтримую пошук треків. Використайте URL посилання"
+  );
   const voiceChannel = message.member.voice.channel;
   if (!voiceChannel)
     return message.channel.send(
@@ -20,30 +23,24 @@ function preCheck(message, url ){
     );
   if (!voiceChannel.permissionsFor(message.client.user).has("CONNECT"))
     return message.channel.send(
-      "I don't have permission to join the voice channel"
+      "У мене немає дозволу на приєднання до цього каналу!"
     );
   if (!voiceChannel.permissionsFor(message.client.user).has("SPEAK"))
     return message.channel.send(
-      "I don't have permission to speak in the voice channel"
+      "У мене немає дозволу говорити в цьому каналі!"
     );
   if (!servers[message.guild.id])
-    servers[message.guild.id] = { queue: { url: [], reuested: [] } };
-    
-    searchSong(message, url, () =>{
-      try {
-        if (!message.guild.voice.channelID)
-          message.member.voice.channel.join().then((connection) => {
-          playVoice(connection, message);
-          });
-      } catch (error) {
-        message.member.voice.channel.join().then((connection) => {
-          playVoice(connection, message);
-        });
-      }
-    })
+    servers[message.guild.id] = { queue: { url: [], reuested: [] }, last_message: null};
+
+  searchSong(message, url, () => {
+    if (bot.voice.connections.size == 0)
+      message.member.voice.channel.join().then((connection) => {
+        playVoice(connection, message);
+      });
+  });
 }
 
-async function searchSong(message,url, callback) {
+async function searchSong(message, url, callback) {
   var server = servers[message.guild.id];
 
   if (url.includes("youtube.com")) {
@@ -57,13 +54,13 @@ async function searchSong(message,url, callback) {
         server.queue.url.push(videos[i].url);
         server.queue.reuested.push(message.author);
       }
-      logPlaylist(message, videos.length)
+      logPlaylist(message, videos.length);
       callback();
     } catch (error) {
       console.error(error);
     }
     try {
-        ytdl.getBasicInfo(url).then((info) => {
+      ytdl.getBasicInfo(url).then((info) => {
         server.queue.url.push(info.videoDetails.video_url);
         server.queue.reuested.push(message.author);
         callback();
@@ -71,23 +68,6 @@ async function searchSong(message,url, callback) {
     } catch (error) {
       console.error(error);
     }
-  }
-}
-
-function play(message, url) {
-
-  servers[message.guild.id].queue.url.push(url);
-  servers[message.guild.id].queue.reuested.push(message.author);
-
-  try {
-    if (!message.guild.voice.channelID)
-      message.member.voice.channel.join().then((connection) => {
-        playVoice(connection, message);
-      });
-  } catch (error) {
-    message.member.voice.channel.join().then((connection) => {
-      playVoice(connection, message);
-    });
   }
 }
 
@@ -105,7 +85,7 @@ function playVoice(connection, message) {
   server.queue.url.shift();
   server.queue.reuested.shift();
   server.dispatcher.on("finish", () => {
-    console.log("Queue end");
+    if(servers[message.guild.id].last_message) servers[message.guild.id].last_message.reaction.removeAll();
     if (server.queue.url[0]) {
       playVoice(connection, message);
     } else {
@@ -116,7 +96,6 @@ function playVoice(connection, message) {
 
 function skip(message) {
   var server = servers[message.guild.id];
-  console.log(server);
   if (server.dispatcher) server.dispatcher.end();
 }
 
@@ -125,12 +104,18 @@ function stop(message) {
   servers[message.guild.id].dispatcher.end();
 }
 
+<<<<<<< Updated upstream
 function logPlaylist(message, count){
   message.channel.send(`В чергу додано ${count} записів `)
+=======
+function logPlaylist(message, count) {
+  message.channel.send(`В чергу додано ${count} записів `);
+>>>>>>> Stashed changes
 }
 
 async function logTrack(message, url, author) {
   var ytdata = await ytdl.getBasicInfo(url);
+<<<<<<< Updated upstream
   message.channel.send(
     new MessageEmbed()
       .setColor("#f6971c")
@@ -152,28 +137,89 @@ async function logTrack(message, url, author) {
       .setTimestamp()
       .setFooter("SDED Community ")
   );
+=======
+  message.channel
+    .send(
+      new MessageEmbed()
+        .setColor("#f6971c")
+        .setAuthor(
+          "Зараз грає",
+          "https://img.icons8.com/office/16/000000/cd--v2.gif"
+        )
+        .setThumbnail(
+          ytdata.player_response.videoDetails.thumbnail.thumbnails[0].url
+        )
+        .addField("Назва", ytdata.videoDetails.title)
+        .addField("Переглядів", ytdata.videoDetails.viewCount, true)
+        .addField(
+          "Тривалість",
+          toNormalTime(ytdata.videoDetails.lengthSeconds),
+          true
+        )
+        .addField("Запит", author, true)
+        .addField("URL", ytdata.videoDetails.video_url)
+        .setTimestamp()
+        .setFooter("SDED Community ")
+    )
+    .then((embedMessage) => {
+      servers[message.guild.id].last_message = embedMessage;
+      reavtionPanel(embedMessage);
+    });
+}
+
+function reavtionPanel(embed) {
+  embed.react("⏮");
+  embed.react("⏹️");
+  embed.react("⏭");
+>>>>>>> Stashed changes
 }
 
 bot.on("message", (message) => {
   var args = message.content.split(" ");
 
-  if (message.channel == process.env.MUSIC_CHANNEL) {
+  if (message.channel == process.env.MUSIC_CHANNEL && !message.author.bot && !message.content.startsWith("1")) {
     preCheck(message, args[0]);
   }
 
   switch (args[0]) {
-    case "play":
+    case "1play":
       preCheck(message, args[1]);
       break;
-    case "skip":
+    case "1skip":
       skip(message);
       break;
-    case "stop":
+    case "1stop":
       stop(message);
+      break;
+<<<<<<< Updated upstream
+  }
+});
+
+=======
+  }
+});
+
+bot.on("messageReactionAdd", (reaction, user) => {
+  if (user.bot) return;
+  if (reaction.message.channel != process.env.MUSIC_CHANNEL) return;
+  switch (reaction.emoji.name) {
+    case "⏮":
+      break;
+    case "⏹️":
+      skip(stop.message);
+      break;
+    case "⏭":
+      skip(reaction.message);
       break;
   }
 });
 
+bot.on("message", (message)=>{
+  if(message.content == "1dell"){
+  message.delete({ timeout: 2000 });
+  }
+})
+>>>>>>> Stashed changes
 
 bot.on("ready", () => {
   console.log(`Logged in as ${bot.user.tag}`);
