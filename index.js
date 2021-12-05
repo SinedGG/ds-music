@@ -58,15 +58,16 @@ async function searchSong(message, url, callback) {
       callback();
     } catch (error) {
       console.error(error);
-    }
-    try {
-      ytdl.getBasicInfo(url).then((info) => {
-        server.queue.url.push(info.videoDetails.video_url);
-        server.queue.reuested.push(message.author);
-        callback();
-      });
-    } catch (error) {
-      console.error(error);
+
+      try {
+        ytdl.getBasicInfo(url).then((info) => {
+          server.queue.url.push(info.videoDetails.video_url);
+          server.queue.reuested.push(message.author);
+          callback();
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 }
