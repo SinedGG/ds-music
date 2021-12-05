@@ -104,40 +104,12 @@ function stop(message) {
   servers[message.guild.id].dispatcher.end();
 }
 
-<<<<<<< Updated upstream
-function logPlaylist(message, count){
-  message.channel.send(`В чергу додано ${count} записів `)
-=======
 function logPlaylist(message, count) {
   message.channel.send(`В чергу додано ${count} записів `);
->>>>>>> Stashed changes
 }
 
 async function logTrack(message, url, author) {
   var ytdata = await ytdl.getBasicInfo(url);
-<<<<<<< Updated upstream
-  message.channel.send(
-    new MessageEmbed()
-      .setColor("#f6971c")
-      .setAuthor(
-        "Зараз грає",
-        "https://cdn.dribbble.com/users/1366755/screenshots/6493370/attachments/1388539/player.gif?compress=1&resize=400x300"
-      )
-      .setThumbnail(
-        ytdata.player_response.videoDetails.thumbnail.thumbnails[0].url
-      )
-      .addField("Назва", ytdata.videoDetails.title)
-      .addField("Переглядів", ytdata.videoDetails.viewCount, true)
-      .addField(
-        "Тривалість",
-        toNormalTime(ytdata.videoDetails.lengthSeconds),
-        true
-      )
-      .addField("Запит", author, true)
-      .setTimestamp()
-      .setFooter("SDED Community ")
-  );
-=======
   message.channel
     .send(
       new MessageEmbed()
@@ -171,7 +143,6 @@ function reavtionPanel(embed) {
   embed.react("⏮");
   embed.react("⏹️");
   embed.react("⏭");
->>>>>>> Stashed changes
 }
 
 bot.on("message", (message) => {
@@ -191,11 +162,6 @@ bot.on("message", (message) => {
     case "1stop":
       stop(message);
       break;
-<<<<<<< Updated upstream
-  }
-});
-
-=======
   }
 });
 
@@ -219,7 +185,6 @@ bot.on("message", (message)=>{
   message.delete({ timeout: 2000 });
   }
 })
->>>>>>> Stashed changes
 
 bot.on("ready", () => {
   console.log(`Logged in as ${bot.user.tag}`);
