@@ -12,7 +12,7 @@ const youtube = new YouTubeAPI(process.env.YT_TOKEN);
 var servers = {};
 
 function preCheck(message, url) {
-  //message.delete({ timeout: 2000 });
+  message.delete({ timeout: 2000 });
   if(!message.content.includes("youtube.com")) return message.channel.send(
     "Я тимчасово не підтримую пошук треків. Використайте URL посилання"
   );
@@ -172,7 +172,7 @@ bot.on("messageReactionAdd", (reaction, user) => {
     case "⏮":
       break;
     case "⏹️":
-      skip(reaction.message);
+      stop(reaction.message);
       break;
     case "⏭":
       skip(reaction.message);
