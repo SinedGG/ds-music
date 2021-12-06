@@ -6,9 +6,9 @@ async function searchSong(bot, message, url, callback) {
   const youtube = new YouTubeAPI(bot.config.YT_TOKEN);
   var server = bot.servers[message.guild.id];
 
-  if (url.includes("youtube.com")) {
+  if (url.includes("youtube.com")|| url.includes("youtu.be")) {
     var playlist_size = 1000;
-    if (url.includes("list=RD")) playlist_size = 25;
+    if (url.includes("list=RD")) playlist_size = 30;
     try {
       var playlist = await youtube.getPlaylist(url, { part: "snippet" });
       var videos = await playlist.getVideos(playlist_size, { part: "snippet" });

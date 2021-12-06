@@ -3,7 +3,7 @@ const playSong = require("./play/playSong.js")
 
 function preCheck(bot ,message, url) {
     message.delete({ timeout: 2000 });
-    if(!message.content.includes("youtube.com")) return message.channel.send(
+    if((!message.content.includes("youtube.com")) && (!message.content.includes("youtu.be"))) return message.channel.send(
       "Я тимчасово не підтримую пошук треків. Використайте URL посилання"
     );
     const voiceChannel = message.member.voice.channel;
