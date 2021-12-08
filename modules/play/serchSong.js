@@ -17,7 +17,7 @@ async function searchSong(bot, message, url, callback) {
         server.queue.url.push(videos[i].url);
         server.queue.reuested.push(message.author);
       }
-      logPlaylist(message, videos.length);
+      logPlaylist(message, videos.length, url);
       callback();
     } catch (error) {
       console.error(error);
