@@ -1,11 +1,9 @@
-const searchSong = require("./play/serchSong.js")
+const searchSong = require("./play/serchURL.js")
 const playSong = require("./play/playSong.js")
 
-function preCheck(bot ,message, url) {
-    message.delete({ timeout: 2000 });
-    if((!message.content.includes("youtube.com")) && (!message.content.includes("youtu.be"))) return message.channel.send(
-      "Я тимчасово не підтримую пошук треків. Використайте URL посилання"
-    );
+function preCheck(bot , message) {
+  
+    //message.delete({ timeout: 15000 });
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel)
       return message.channel.send(
@@ -19,13 +17,8 @@ function preCheck(bot ,message, url) {
       return message.channel.send(
         "У мене немає дозволу говорити в цьому каналі!"
       );
-    if (!bot.servers[message.guild.id]) bot.servers[message.guild.id] = { queue: { url: [], reuested: [] }, last_message: null};
-    searchSong(bot, message, url, () => {
-      if (bot.voice.connections.size == 0)
-        message.member.voice.channel.join().then((connection) => {
-          playSong(bot, connection, message);
-        });
-    });
+    if (!bot.servers[message.guild.id]) bot.servers[message.guild.id] = { queue: { url: [], reuested: [] }, last_message: null, connection: null};
+    return true;
   }
 
   module.exports = preCheck;

@@ -34,7 +34,7 @@ async function logTrack(message, url, author, servers) {
   }
 
 function reactionPanel(embed) {
-    embed.react("⏮");
+    embed.react("⏮", "✔️");
     embed.react("⏹️");
     embed.react("⏭");
   }
