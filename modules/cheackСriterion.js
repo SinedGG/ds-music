@@ -17,6 +17,7 @@ function preCheck(bot , message) {
       return message.channel.send(
         "У мене немає дозволу говорити в цьому каналі!"
       );
+      console.log(bot.servers[message.guild.id])
     if (!bot.servers[message.guild.id]) bot.servers[message.guild.id] = { queue: { url: [], reuested: [] }, last_message: null, connection: null};
     return true;
   }

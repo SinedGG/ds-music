@@ -23,6 +23,7 @@ function playSong(bot, message) {
         playSong(bot, message);
       } else {
         server.connection.disconnect();
+        server.connection = null;
         bot.user.setPresence({
           activity: {
             name: "Окей лестгоу!",

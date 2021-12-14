@@ -19,7 +19,7 @@ async function searchSong(bot, message, url) {
       server.queue.reuested.push(message.author);
     }
     logPlaylist(message, videos.length, url);
-    connect(bot, message);
+    connect(bot, message, url);
     message.react("✔️");
     message.react("📃");
     message.delete({ timeout: 15000 });
@@ -30,7 +30,7 @@ async function searchSong(bot, message, url) {
       ytdl.getBasicInfo(url).then((info) => {
         server.queue.url.push(info.videoDetails.video_url);
         server.queue.reuested.push(message.author);
-        connect(bot, message);
+        connect(bot, message, url);
         message.react("✔️");
         message.delete({ timeout: 15000 });
       });
