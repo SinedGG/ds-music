@@ -9,7 +9,8 @@ function playSong(bot, message) {
     const source = ytdl(server.queue.url[0], {
       filter: "audioonly",
       quality: "highestaudio",
-      //opusEncoded: true,
+      highWaterMark: 1 << 25,
+      opusEncoded: true,
     });
   
     logTrack(message, server.queue.url[0], server.queue.reuested[0], bot.servers);
