@@ -24,7 +24,10 @@ async function searchSong(bot, message, url) {
     message.react("📃");
     message.delete({ timeout: 15000 });
   } catch (error) {
-    console.error(error);
+    if(!error.message.includes("No playlist ID found in URL")){
+      console.error(error.message);
+    }
+
 
     try {
       ytdl.getBasicInfo(url).then((info) => {
