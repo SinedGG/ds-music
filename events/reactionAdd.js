@@ -1,4 +1,4 @@
-const commands = require("../commands/main.js")
+const queueControl = require("../modules/queueControl.js");
 
 function r(bot) {
     bot.on("messageReactionAdd", (reaction, user) => {
@@ -6,12 +6,13 @@ function r(bot) {
         if (reaction.message.channel != process.env.MUSIC_CHANNEL) return;
         switch (reaction.emoji.name) {
           case "⏮":
+            queueControl.prew(reaction.message, bot.servers);
             break;
           case "⏹️":
-            commands.stop(reaction.message, bot.servers);
+            queueControl.stop(reaction.message, bot.servers);
             break;
           case "⏭":
-            commands.skip(reaction.message, bot.servers);
+            queueControl.skip(reaction.message, bot.servers);
             break;
         }
       });
