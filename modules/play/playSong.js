@@ -1,36 +1,27 @@
 const logTrack = require("../output/sendTrack.js")
-const activity = require("../output/setActivity.js")
+const queueControl = require("../queueControl.js");
 
 const ytdl = require("ytdl-core");
 
 function playSong(bot, message) {
     var server = bot.servers[message.guild.id];
 
-    const source = ytdl(server.queue.url[0], {
+    const source = ytdl(server.queue.url[server.queue.position], {
       filter: "audioonly",
       quality: "highestaudio",
-      highWaterMark: 1 << 25,
+      highWaterMark: 1 << 20,
       opusEncoded: true,
     });
   
-    logTrack(message, server.queue.url[0], server.queue.reuested[0], bot.servers);
-    activity(bot, server.queue.url[0])
+    logTrack(message, bot.servers, server.queue.position);
     server.dispatcher = server.connection.play(source);
-    server.queue.url.shift();
-    server.queue.reuested.shift();
+    server.queue.position++;
     server.dispatcher.on("finish", () => {
       if(server.last_message) server.last_message.reactions.removeAll();
-      if (server.queue.url[0]) {
+      if (server.queue.url[server.queue.position]) {
         playSong(bot, message);
       } else {
-        server.connection.disconnect();
-        server.connection = null;
-        bot.user.setPresence({
-          activity: {
-            name: "Окей лестгоу!",
-            type: "LISTENING",
-          },
-        })
+        queueControl.stop(message, bot.servers);
       }
     });
   }
