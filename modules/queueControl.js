@@ -12,7 +12,7 @@ module.exports = {
   },
 
   stop: function (message, servers) {
-    if(servers[message.guild.id].connection){
+    if(servers[message.guild.id]){
     servers[message.guild.id].connection.disconnect();
     }
   }
