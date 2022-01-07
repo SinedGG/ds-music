@@ -13,4 +13,7 @@ message(bot);
 const reaction = require("./events/reactionAdd.js");
 reaction(bot);
 
+const disconnect = require("./events/disconnect.js");
+disconnect(bot);
+
 bot.login(process.env.TOKEN);
