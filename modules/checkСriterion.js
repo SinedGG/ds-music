@@ -17,7 +17,7 @@ function preCheck(bot, message) {
 
   if (!bot.servers[message.guild.id])
     bot.servers[message.guild.id] = {
-      queue: { url: [], reuested: [], position: 0 },
+      queue: { url: [], requested: [], position: 0 },
       last_message: null,
       connection: null
     };
