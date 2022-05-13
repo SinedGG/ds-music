@@ -4,7 +4,7 @@ const ytdl = require("ytdl-core");
 var youtube;
 var server;
 
-const addQueue = require("./addQueue.js");
+const connect = require("./connect.js");
 
 function main(bot, message, searchContent) {
   youtube = new YouTubeAPI(bot.config.YT_TOKEN);
@@ -44,7 +44,7 @@ async function serchList(bot, message, searchContent) {
     message.react("✔️");
     message.react("📃");
     setTimeout(() => message.delete(), 15000);
-    addQueue(bot, message);
+    connect(bot, message);
   } catch (error) {
     if (!error.message.includes("No playlist ID found in URL")) {
       console.error(error.message);
@@ -60,7 +60,7 @@ function validateURL(bot, message, searchContent) {
       server.queue.requested.push(message.author);
       message.react("✔️");
       setTimeout(() => message.delete(), 15000);
-      addQueue(bot, message);
+      connect(bot, message);
     })
     .catch((err) => {
       console.log(err);
@@ -77,7 +77,7 @@ function serchByName(bot, message, searchContent) {
       if (results == 0) return message.react("❌");
       server.queue.url.push(results[0].url);
       server.queue.requested.push(message.author);
-      addQueue(bot, message);
+      connect(bot, message);
       message.react("✔️");
     })
     .catch(console.log);
