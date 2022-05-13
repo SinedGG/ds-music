@@ -17,7 +17,6 @@ function playSong(bot, message) {
     {
       highWaterMark: 1024 * 1024 * 64,
       filter: "audioonly",
-      quality: "highestaudio",
     }
   );
   const resource = createAudioResource(stream, {
