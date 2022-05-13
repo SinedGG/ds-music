@@ -8,6 +8,7 @@ function r(bot) {
       if (bot.servers[oldState.guild.id]) {
         bot.servers[oldState.guild.id].dispatcher.stop();
         bot.servers[oldState.guild.id] = null;
+        console.log(`Disconnected from voice in guild ${oldState.guild.name}`);
       }
     }
   });
