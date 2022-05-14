@@ -31,9 +31,13 @@ function playSong(bot, message) {
   server.queue.position++;
 
   server.dispatcher.on("error", (error) => {
-    console.error(
-      `Error: ${error.message} with resource ${error.resource.metadata.title}`
-    );
+    console.log(error);
+    if (server.last_message) server.last_message.reactions.removeAll();
+    if (server.queue.url[server.queue.position]) {
+      playSong(bot, message);
+    } else {
+      queueControl.stop(message, bot.servers);
+    }
   });
 
   server.dispatcher.on("idle", () => {
