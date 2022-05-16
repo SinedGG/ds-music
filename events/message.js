@@ -28,10 +28,15 @@ module.exports = (bot, db) => {
         setTimeout(() => message.delete(), 15000);
         queueControl.prew(message, bot.servers);
         break;
+      case "1help":
+        command.help(message);
+        break;
       case "1setchannel":
         command.setChannel(message, db);
         break;
       default:
+        if((message.content.includes("youtube.com") ||
+        message.content.includes("youtu.be"))){
         db.query(
           `SELECT * FROM channels WHERE guild_id = ${message.guild.id}`,
           (err, rows) => {
@@ -40,9 +45,9 @@ module.exports = (bot, db) => {
             } else {
               if (rows.length > 0) {
                 if (
-                  message.channel == rows[0].channel_id  &&
-                  checkСriterion(bot, message) && (message.content.includes("youtube.com") ||
-                  message.content.includes("youtu.be"))
+                  
+                  
+                 message.channel == rows[0].channel_id   && checkСriterion(bot, message)
                 ) {
                   serchSong(bot, message, args[0]);
                   return;
@@ -55,6 +60,7 @@ module.exports = (bot, db) => {
             }
           }
         );
+        }
         break;
     }
   });
