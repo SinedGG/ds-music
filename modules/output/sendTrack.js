@@ -30,7 +30,15 @@ async function logTrack(message, servers, position) {
         value: toNormalTime(ytdata.videoDetails.lengthSeconds),
         inline: true,
       },
-      { name: "Запит", value: `<@${server.queue.requested[position].id}>` , inline: true },
+      {
+        name: "Запит",
+        value: `<@${server.queue.requested[position].id}>`,
+        inline: true,
+      },
+      {
+        name: "Відвторити знову",
+        value: `[Клац](https://ds-music.sded.cf/play?guild=${message.guild.id}&url=${ytdata.videoDetails.video_url})`,
+      },
       { name: "URL", value: ytdata.videoDetails.video_url }
     )
     .setTimestamp()

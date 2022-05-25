@@ -1,8 +1,8 @@
-const queueControl = require("../modules/queueControl.js");
-const checkСriterion = require("../modules/checkСriterion.js");
-const serchSong = require("../modules/serchSong.js");
-const command = require("../commands/index.js")
-
+const queueControl = require("../modules/queueControl.js"),
+  checkСriterion = require("../modules/checkСriterion.js"),
+  serchSong = require("../modules/serchSong.js"),
+  command = require("../commands/index.js"),
+  msgCon = require("../modules/messageControl.js");
 
 module.exports = (bot, db) => {
   bot.on("messageCreate", (message) => {
@@ -17,44 +17,53 @@ module.exports = (bot, db) => {
         }
         break;
       case "1skip":
-        setTimeout(() => message.delete(), 15000);
+        msgCon.del(message, 15);
         queueControl.skip(message, bot.servers);
         break;
       case "1stop":
-        setTimeout(() => message.delete(), 15000);
+        msgCon.del(message, 15);
         queueControl.stop(message, bot.servers);
         break;
       case "1prew":
-        setTimeout(() => message.delete(), 15000);
+        msgCon.del(message, 15);
         queueControl.prew(message, bot.servers);
+        break;
+      case "1help":
+        command.help(message);
         break;
       case "1setchannel":
         command.setChannel(message, db);
         break;
       default:
-        db.query(
-          `SELECT * FROM channels WHERE guild_id = ${message.guild.id}`,
-          (err, rows) => {
-            if (err) {
-              console.log(err);
-            } else {
-              if (rows.length > 0) {
-                if (
-                  message.channel == rows[0].channel_id  &&
-                  checkСriterion(bot, message) && (message.content.includes("youtube.com") ||
-                  message.content.includes("youtu.be"))
-                ) {
-                  serchSong(bot, message, args[0]);
-                  return;
-                } else {
-                  //setTimeout(() => message.delete(), 15000);
-                }
+        if (
+          message.content.includes("youtube.com") ||
+          message.content.includes("youtu.be")
+        ) {
+          db.query(
+            `SELECT * FROM channels WHERE guild_id = ${message.guild.id}`,
+            (err, rows) => {
+              if (err) {
+                console.log(err);
               } else {
-                //to do something 
+                if (rows.length > 0) {
+                  if (
+                    message.channel == rows[0].channel_id &&
+                    checkСriterion(bot, message)
+                  ) {
+                    serchSong(
+                      bot,
+                      message,
+                      message.content.replace("1play ", "")
+                    );
+                    return;
+                  }
+                } else {
+                  //to do something
+                }
               }
             }
-          }
-        );
+          );
+        }
         break;
     }
   });

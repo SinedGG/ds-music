@@ -1,6 +1,16 @@
+const { MessageEmbed } = require("discord.js");
+
 module.exports = {
   help: function (message) {
-   
+    const embed = new MessageEmbed()
+    .setColor("#f6971c")
+    .setTitle('Список команд')
+    .addFields(
+      { name: "Управління чергою терків", value:  "1play \n 1stop \n 1skip \n 1prew" },
+      { name: "Всановлення музичного каналу", value:  "1setchannel" },
+    )
+    .setFooter({ text: "SDED Community " });
+    message.channel.send({ embeds: [embed] });
   },
 
   setChannel: function (message, db) {
