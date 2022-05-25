@@ -27,6 +27,7 @@ bot.on("ready", () => {
   require("./events/message.js")(bot, db);
   require("./events/reactionAdd.js")(bot);
   require("./events/disconnect.js")(bot);
+  require("./web/server.js")(bot);
 });
 
 bot.login(process.env.TOKEN);
