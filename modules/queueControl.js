@@ -1,3 +1,5 @@
+const pauseMessage = require("../modules/output/pauseMessage.js");
+
 module.exports = {
   prew: function (message, servers) {
     var server = servers[message.guild.id];
@@ -28,5 +30,20 @@ module.exports = {
   add: function (server, url, author) {
     server.queue.url.push(url);
     server.queue.requested.push(author);
+  },
+  pause: function (message, servers) {
+    var server = servers[message.guild.id];
+    if (server.dispatcher) {
+      server.dispatcher.pause();
+      pauseMessage(message);
+      console.log(`Paused in guild ${message.guild.name}`);
+    }
+  },
+  resume: function (message, servers) {
+    var server = servers[message.guild.id];
+    if (server.dispatcher) {
+      server.dispatcher.unpause();
+      console.log(`Resumed in guild ${message.guild.name}`);
+    }
   },
 };

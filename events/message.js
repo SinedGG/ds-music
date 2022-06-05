@@ -28,6 +28,14 @@ module.exports = (bot, db) => {
         msgCon.del(message, 15);
         queueControl.prew(message, bot.servers);
         break;
+      case "1pause":
+        msgCon.del(message, 15);
+        queueControl.pause(message, bot.servers);
+        break;
+      case "1resume":
+        msgCon.del(message, 15);
+        queueControl.resume(message, bot.servers);
+        break;
       case "1help":
         command.help(message);
         break;

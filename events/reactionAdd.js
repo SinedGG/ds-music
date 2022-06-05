@@ -13,6 +13,9 @@ module.exports = (bot) => {
       case "⏭":
         queueControl.skip(reaction.message, bot.servers);
         break;
+      case "⏯️":
+        queueControl.resume(reaction.message, bot.servers);
+        break;
     }
   });
 };
