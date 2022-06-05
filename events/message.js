@@ -36,6 +36,10 @@ module.exports = (bot, db) => {
         msgCon.del(message, 15);
         queueControl.resume(message, bot.servers);
         break;
+      case "1insert":
+        msgCon.del(message, 15);
+        queueControl.insert(message, bot.servers);
+        break;
       case "1help":
         command.help(message);
         break;

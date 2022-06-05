@@ -46,4 +46,13 @@ module.exports = {
       console.log(`Resumed in guild ${message.guild.name}`);
     }
   },
+  insert: function (message, servers) {
+    var server = servers[message.guild.id];
+    if (server.dispatcher) {
+      var args = message.content.split(" ");
+      if (args[1].includes("youtube.com") || args[1].includes("youtu.be")) {
+        server.queue.url.splice(server.queue.position, 0, args[1]);
+      }
+    }
+  },
 };
