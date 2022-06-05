@@ -40,6 +40,10 @@ module.exports = (bot, db) => {
         msgCon.del(message, 15);
         queueControl.insert(message, bot.servers);
         break;
+      case "1mix":
+        msgCon.del(message, 15);
+        queueControl.mix(message, bot.servers);
+        break;
       case "1help":
         command.help(message);
         break;

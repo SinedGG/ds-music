@@ -55,4 +55,16 @@ module.exports = {
       }
     }
   },
+  mix: function (message, servers) {
+    var server = servers[message.guild.id];
+    for (var i = server.queue.url.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = server.queue.url[i];
+      server.queue.url[i] = server.queue.url[j];
+      server.queue.url[j] = temp;
+      var temp = server.queue.requested[i];
+      server.queue.requested[i] = server.queue.requested[j];
+      server.queue.requested[j] = temp;
+    }
+  },
 };
