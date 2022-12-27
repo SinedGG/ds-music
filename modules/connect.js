@@ -1,19 +1,20 @@
-const playSong = require("./playSong.js");
+const { joinVoiceChannel, VoiceConnectionStatus } = require("@discordjs/voice");
+const queue = require("../modules/queue-control.js");
 
-const { joinVoiceChannel } = require("@discordjs/voice");
-
-function connect(bot, message) {
-  var server = bot.servers[message.guild.id];
-
-  if (!server.connection) {
-    server.connection = joinVoiceChannel({
-      channelId: message.member.voice.channel.id,
-      guildId: message.member.voice.channel.guild.id,
-      adapterCreator: message.member.voice.channel.guild.voiceAdapterCreator,
+module.exports = (voice) => {
+  return new Promise((resolve, reject) => {
+    const connection = joinVoiceChannel({
+      channelId: voice.channel.id,
+      guildId: voice.channel.guild.id,
+      adapterCreator: voice.channel.guild.voiceAdapterCreator,
     });
-    playSong(bot, message);
-    console.log(`Connected to voice in guild ${message.guild.name}`);
-  }
-}
 
-module.exports = connect;
+    connection.on(VoiceConnectionStatus.Ready, () => {
+      console.log(
+        `Successfully joined in voice channel - ${voice.channel.name} in guild - ${voice.channel.guild}`
+      );
+      queue.set_voice(voice.channel.guild.id, voice.channel.id);
+      resolve();
+    });
+  });
+};
