@@ -31,3 +31,5 @@ bot.on("ready", () => {
 //bot.on("messageCreate", (message) => {});
 
 bot.login(process.env.DS_TOKEN);
+
+module.exports = bot;

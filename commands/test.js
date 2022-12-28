@@ -9,8 +9,30 @@ module.exports = {
     // interaction.member is the GuildMember object, which represents the user in the specific guild
     console.log("interaction");
     console.log(interaction);
-    await interaction.reply(
-      `This command was run by ${interaction.user.username}, who joined on ${interaction.member.joinedAt}.`
+
+    const {
+      ActionRowBuilder,
+      ButtonBuilder,
+      ButtonStyle,
+    } = require("discord.js");
+
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("prew")
+        .setLabel("⏮")
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("stop")
+        .setLabel("⏹")
+        .setStyle(ButtonStyle.Danger),
+      new ButtonBuilder()
+        .setCustomId("next")
+        .setLabel("⏭")
+        .setStyle(ButtonStyle.Success)
     );
+    await interaction.reply({
+      content: "I think you should,",
+      components: [row],
+    });
   },
 };

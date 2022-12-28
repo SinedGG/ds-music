@@ -38,4 +38,10 @@ module.exports = async (bot) => {
       console.error(error);
     }
   });
+
+  bot.on(Events.InteractionCreate, (interaction) => {
+    if (!interaction.isButton()) return;
+    console.log(interaction);
+    const queue = require("../modules/queue-control.js");
+  });
 };

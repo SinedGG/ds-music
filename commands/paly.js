@@ -23,17 +23,21 @@ module.exports = {
     const member_id = interaction.member.id;
 
     if (!pre_check(interaction)) return;
+    console.log(interaction);
+    //interaction.deferReply();
     try {
       const param = interaction.options.getString("url-or-name");
       var id = await search(param);
 
       queue.create(guild_id);
       queue.push(guild_id, member_id, id);
-      console.log(queue.connected(guild_id));
+      queue.sessions[guild_id].last_message = interaction.channelId;
+
       if (!queue.connected(guild_id)) {
         connect(interaction.member.voice);
         play(guild_id);
       }
+      //interaction.reply("👌");
     } catch (error) {
       console.log(`play error `);
       console.log(error);

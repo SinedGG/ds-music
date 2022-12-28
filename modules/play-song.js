@@ -11,13 +11,21 @@ function playSong(guild_id) {
   var server = queue.sessions[guild_id];
   const song = queue.next(guild_id);
   if (!song) return queue.stop(guild_id);
-  const stream = ytdl(`https://www.youtube.com/watch?v=${song.url}`, {
+  const stream = ytdl(song.url, {
     highWaterMark: 1024 * 1024 * 64,
     filter: "audioonly",
     quality: "highestaudio",
-  }).on("error", (err) => {
-    console.log("ytdl err", err);
-  });
+  })
+    .on("error", (err) => {
+      console.log("ytdl err", err);
+    })
+    .on("info", (info) => {
+      require("./output/sendTrack.js")(
+        info,
+        song.requested,
+        "699526377635971103"
+      );
+    });
   const resource = createAudioResource(stream, {
     inlineVolume: true,
   });

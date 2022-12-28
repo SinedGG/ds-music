@@ -3,7 +3,7 @@ const axios = require("axios");
 
 module.exports = (url) => {
   return new Promise(async (resolve, reject) => {
-    console.log(list, url);
+    console.log("list", url);
     const list_id = new URL(url).searchParams.get("list");
     const api_key = process.env.YT_TOKEN;
     var out = [];

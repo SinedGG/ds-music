@@ -37,15 +37,15 @@ module.exports = {
   },
 
   stop: (guild_id) => {
-    ssessions[guild_id].player.stop();
-    ssessions[guild_id] = null;
+    sessions[guild_id].player.stop();
+    sessions[guild_id] = null;
     getVoiceConnection(guild_id).destroy();
   },
   skip: (guild_id, number) => {
     if (number) {
       sessions[guild_id].position += number - 1;
     }
-    ssessions[guild_id].player.stop();
+    sessions[guild_id].player.stop();
   },
   /*
   prew: function (message, servers) {

@@ -1,58 +1,49 @@
-const toNormalTime = require("../toNormalTime.js");
-const ytdl = require("ytdl-core");
-const { MessageEmbed } = require("discord.js");
+const format_time = require("../format-time.js");
+const { EmbedBuilder } = require("discord.js");
+const bot = require("../../index.js");
+const button = require("./buttons.js");
 
-async function logTrack(message, servers, position) {
-  var server = servers[message.guild.id];
-  var ytdata = await ytdl.getBasicInfo(server.queue.url[position]);
-  console.log(
-    `Playing ${ytdata.videoDetails.title} requested by ${server.queue.requested[position].username} in guild ${message.guild.name}`
-  );
-
-  var embed = new MessageEmbed()
+module.exports = (info, requested, channel_id) => {
+  const embed = new EmbedBuilder()
     .setColor("#f6971c")
     .setAuthor({
       name: "Зараз грає",
       iconURL: "https://img.icons8.com/office/16/000000/cd--v2.gif",
     })
     .setThumbnail(
-      ytdata.player_response.videoDetails.thumbnail.thumbnails[0].url
+      info.player_response.videoDetails.thumbnail.thumbnails.pop().url
     )
     .addFields(
-      { name: "Назва", value: ytdata.videoDetails.title },
+      { name: "Назва", value: info.videoDetails.title },
       {
         name: "Переглядів",
-        value: ytdata.videoDetails.viewCount,
+        value: info.videoDetails.viewCount,
         inline: true,
       },
       {
         name: "Тривалість",
-        value: toNormalTime(ytdata.videoDetails.lengthSeconds),
+        value: format_time(info.videoDetails.lengthSeconds),
         inline: true,
       },
       {
         name: "Запит",
-        value: `<@${server.queue.requested[position].id}>`,
+        value: `<@${requested}>`,
         inline: true,
       },
       {
         name: "Відвторити знову",
-        value: `[Клац](https://ds-music.sded.cf/play?guild=${message.guild.id}&url=${ytdata.videoDetails.video_url})`,
+        value: `[Клац](https://ds-music.sded.cf/play?guild=&url=${info.videoDetails.video_url})`,
       },
-      { name: "URL", value: ytdata.videoDetails.video_url }
+      { name: "URL", value: info.videoDetails.video_url }
     )
-    .setTimestamp()
-    .setFooter({ text: "SDED Community " });
-  message.channel.send({ embeds: [embed] }).then((embedMessage) => {
-    servers[message.guild.id].last_message = embedMessage;
-    reactionPanel(embedMessage);
-  });
-}
+    .setTimestamp();
 
-function reactionPanel(embed) {
-  embed.react("⏮", "✔️");
-  embed.react("⏹️");
-  embed.react("⏭");
-}
-
-module.exports = logTrack;
+  const channel = bot.channels.cache.get(channel_id);
+  channel.send({ embeds: [embed], components: [button] });
+  /*
+message.channel.send({ embeds: [embed] }).then((embedMessage) => {
+  servers[message.guild.id].last_message = embedMessage;
+  reactionPanel(embedMessage);
+});
+*/
+};
