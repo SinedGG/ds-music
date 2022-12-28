@@ -35,6 +35,8 @@ function playSong(guild_id) {
 
   server.player.on(AudioPlayerStatus.Idle, () => {
     playSong(guild_id);
+
+    //require("./remove-buttons.js")(guild_id);
   });
 }
 

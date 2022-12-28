@@ -42,6 +42,17 @@ module.exports = async (bot) => {
   bot.on(Events.InteractionCreate, (interaction) => {
     if (!interaction.isButton()) return;
     console.log(interaction);
-    const queue = require("../modules/queue-control.js");
+    const guild_id = interaction.guild.id;
+
+    const queue = require("./queue-control.js");
+    const bot = require("../index.js");
+
+    const channel = bot.channels.cache.get(queue.get_text(guild_id));
+    channel.messages.fetch(queue.get_message(guild_id)).then((message) => {
+      console.log(message);
+      return message.update({
+        components: [],
+      });
+    });
   });
 };

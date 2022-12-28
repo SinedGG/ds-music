@@ -39,7 +39,10 @@ module.exports = (info, requested, channel_id) => {
     .setTimestamp();
 
   const channel = bot.channels.cache.get(channel_id);
-  channel.send({ embeds: [embed], components: [button] });
+  channel.send({ embeds: [embed], components: [button] }).then((message) => {
+    const { set_message } = require("../queue-control.js");
+    set_message(message.guildId, message.id);
+  });
   /*
 message.channel.send({ embeds: [embed] }).then((embedMessage) => {
   servers[message.guild.id].last_message = embedMessage;

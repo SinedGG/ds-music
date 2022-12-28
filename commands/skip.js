@@ -8,6 +8,7 @@ module.exports = {
     .addIntegerOption((option) =>
       option.setName("number").setDescription("Кількість треків для пропуску")
     ),
+
   async execute(interaction) {
     const guild_id = interaction.guild.id;
 
@@ -16,5 +17,9 @@ module.exports = {
       queue.skip(guild_id, param);
       interaction.reply("👌");
     } else interaction.reply("Зараз нічого не грає 😔");
+
+    setTimeout(() => {
+      interaction.deleteReply().catch((e) => {});
+    }, 30000);
   },
 };

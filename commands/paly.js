@@ -23,7 +23,6 @@ module.exports = {
     const member_id = interaction.member.id;
 
     if (!pre_check(interaction)) return;
-    console.log(interaction);
     //interaction.deferReply();
     try {
       const param = interaction.options.getString("url-or-name");
@@ -31,15 +30,15 @@ module.exports = {
 
       queue.create(guild_id);
       queue.push(guild_id, member_id, id);
-      queue.sessions[guild_id].last_message = interaction.channelId;
 
       if (!queue.connected(guild_id)) {
         connect(interaction.member.voice);
+        queue.set_text(guild_id, interaction.channelId);
         play(guild_id);
       }
       //interaction.reply("👌");
     } catch (error) {
-      console.log(`play error `);
+      interaction.reply("Не вдалось нічого знайти");
       console.log(error);
     }
     /*

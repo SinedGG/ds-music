@@ -14,6 +14,7 @@ module.exports = {
         position: 0,
         last_message: null,
         voice_id: null,
+        text_id: null,
         player: null,
       };
     }
@@ -21,6 +22,23 @@ module.exports = {
   set_voice: (guild_id, voice_id) => {
     sessions[guild_id].voice_id = voice_id;
   },
+
+  set_text: (guild_id, text_id) => {
+    sessions[guild_id].text_id = text_id;
+  },
+
+  set_message: (guild_id, message_id) => {
+    sessions[guild_id].last_message = message_id;
+  },
+
+  get_message: (guild_id) => {
+    return sessions[guild_id].last_message;
+  },
+
+  get_text: (guild_id) => {
+    return sessions[guild_id].text_id;
+  },
+
   push: (guild_id, member_id, id) => {
     if (typeof id != "string") {
       for (let i = 0; i < id.length; i++) {
@@ -36,83 +54,34 @@ module.exports = {
     return song;
   },
 
-  stop: (guild_id) => {
+  stop: async (guild_id) => {
     sessions[guild_id].player.stop();
-    sessions[guild_id] = null;
     getVoiceConnection(guild_id).destroy();
+    await require("./remove-buttons.js")(guild_id);
+    sessions[guild_id] = null;
+    console.log(`Stopped in guild ${guild_id}`);
   },
   skip: (guild_id, number) => {
-    if (number) {
-      sessions[guild_id].position += number - 1;
-    }
+    if (number) sessions[guild_id].position += number;
+    sessions[guild_id].player.stop();
+    require("./remove-buttons.js")(guild_id);
+    console.log(`Skipped in guild ${guild_id}`);
+  },
+
+  prew: function (guild_id, number) {
+    if (sessions[guild_id].position - 1 < 0) return;
+    if (number) sessions[guild_id].position -= number;
+    else sessions[guild_id].position -= 2;
     sessions[guild_id].player.stop();
   },
-  /*
-  prew: function (message, servers) {
-    var server = servers[message.guild.id];
-    if (server.queue.position - 1 < 0) return;
-    servers[message.guild.id].queue.position -= 2;
-    if (server.dispatcher) server.dispatcher.stop();
-  },
 
-  skip: function (message, servers) {
-    var server = servers[message.guild.id];
-    var args = message.content.split(" ");
-    if (args[1]) {
-      var parsed = parseInt(args[1]);
-      if (!isNaN(parsed)) {
-        servers[message.guild.id].queue.position += parsed;
-      }
-    }
-    if (server.dispatcher) server.dispatcher.stop();
-  },
-
-  stop: function (message, servers) {
-    var server = servers[message.guild.id];
-    if (server.last_message)
-      server.last_message.reactions.removeAll().catch((error) => {});
-    server.connection.disconnect();
-  },
-
-  add: function (server, url, author) {
-    server.queue.url.push(url);
-    server.queue.requested.push(author);
-  },
-  pause: function (message, servers) {
-    var server = servers[message.guild.id];
-    if (server.dispatcher) {
-      server.dispatcher.pause();
-      pauseMessage(message);
-      console.log(`Paused in guild ${message.guild.name}`);
-    }
-  },
-  resume: function (message, servers) {
-    var server = servers[message.guild.id];
-    if (server.dispatcher) {
-      server.dispatcher.unpause();
-      console.log(`Resumed in guild ${message.guild.name}`);
-    }
-  },
-  insert: function (message, servers) {
-    var server = servers[message.guild.id];
-    if (server.dispatcher) {
-      var args = message.content.split(" ");
-      if (args[1].includes("youtube.com") || args[1].includes("youtu.be")) {
-        server.queue.url.splice(server.queue.position, 0, args[1]);
-      }
-    }
-  },
-  mix: function (message, servers) {
+  mix: function (guild_id) {
     var server = servers[message.guild.id];
     for (var i = server.queue.url.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
-      var temp = server.queue.url[i];
-      server.queue.url[i] = server.queue.url[j];
-      server.queue.url[j] = temp;
-      var temp = server.queue.requested[i];
-      server.queue.requested[i] = server.queue.requested[j];
-      server.queue.requested[j] = temp;
+      var temp = sessions[guild_id].queue[i];
+      sessions[guild_id].queue[i] = server.queue.url[j];
+      sessions[guild_id].queue[j] = temp;
     }
   },
-  */
 };

@@ -10,7 +10,6 @@ module.exports = {
 
     if (connected(guild_id)) {
       stop(guild_id);
-      console.log(`Stopped in guild ${guild_id}`);
       interaction.reply("👌");
     } else interaction.reply("Немає що зупиняти 🤦🏻‍♂️");
 
