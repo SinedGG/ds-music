@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const {
   createAudioPlayer,
   createAudioResource,
@@ -9,14 +11,21 @@ const queue = require("./queue-control.js");
 
 function playSong(guild_id, song) {
   var server = queue.sessions[guild_id];
+  const connection = getVoiceConnection(guild_id);
+
   const stream = ytdl(song.url, {
     highWaterMark: 1024 * 1024 * 64,
     filter: "audioonly",
     quality: "highestaudio",
+    requestOptions: {
+      headers: {
+        cookie: process.env.COOKIE,
+      },
+    },
   })
     .on("error", (err) => {
       console.log("ytdl err", err);
-      next(guild_id);
+      next(guild_id, connection);
     })
     .on("info", (info) => {
       require("./output/sendTrack.js")(
@@ -29,18 +38,16 @@ function playSong(guild_id, song) {
     inlineVolume: true,
   });
   server.player = createAudioPlayer();
-  const connection = getVoiceConnection(guild_id);
   connection.subscribe(server.player);
   server.player.play(resource);
 
-  server.player.on(AudioPlayerStatus.Idle, () => {
-    next(guild_id);
+  server.player.on(AudioPlayerStatus.Idle, async () => {
+    next(guild_id, connection);
   });
 }
 
-async function next(guild_id) {
-  const song = queue.next(guild_id);
-  await require("./remove-buttons.js")(guild_id);
+function next(guild_id, connection) {
+  var song = queue.next(guild_id);
   if (!song) return connection.destroy();
   playSong(guild_id, song);
 }

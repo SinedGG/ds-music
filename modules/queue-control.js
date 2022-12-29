@@ -60,7 +60,8 @@ module.exports = {
     sessions[guild_id] = null;
     console.log(`Stopped in guild ${guild_id}`);
   },
-  skip: (guild_id, number) => {
+  skip: async (guild_id, number) => {
+    await require("./remove-buttons.js")(guild_id);
     if (number) sessions[guild_id].position += number - 1;
     sessions[guild_id].player.stop();
     console.log(`Skipped in guild ${guild_id}`);
