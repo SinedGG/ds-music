@@ -55,16 +55,14 @@ module.exports = {
   },
 
   stop: async (guild_id) => {
-    sessions[guild_id].player.stop();
-    getVoiceConnection(guild_id).destroy();
     await require("./remove-buttons.js")(guild_id);
+    sessions[guild_id].player.stop();
     sessions[guild_id] = null;
     console.log(`Stopped in guild ${guild_id}`);
   },
   skip: (guild_id, number) => {
-    if (number) sessions[guild_id].position += number;
+    if (number) sessions[guild_id].position += number - 1;
     sessions[guild_id].player.stop();
-    require("./remove-buttons.js")(guild_id);
     console.log(`Skipped in guild ${guild_id}`);
   },
 

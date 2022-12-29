@@ -26,6 +26,7 @@ bot.on("ready", () => {
   const d = require("./modules/commands-handling.js");
   reg(bot);
   d(bot);
+  require("./handler/event.js")(bot);
 });
 
 //bot.on("messageCreate", (message) => {});
@@ -33,3 +34,7 @@ bot.on("ready", () => {
 bot.login(process.env.DS_TOKEN);
 
 module.exports = bot;
+
+process.on("uncaughtException", (err) => {
+  console.log(err);
+});

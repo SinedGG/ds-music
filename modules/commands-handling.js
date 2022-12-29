@@ -44,15 +44,10 @@ module.exports = async (bot) => {
     console.log(interaction);
     const guild_id = interaction.guild.id;
 
-    const queue = require("./queue-control.js");
-    const bot = require("../index.js");
+    const { prew, stop, skip } = require("./queue-control.js");
 
-    const channel = bot.channels.cache.get(queue.get_text(guild_id));
-    channel.messages.fetch(queue.get_message(guild_id)).then((message) => {
-      console.log(message);
-      return message.update({
-        components: [],
-      });
-    });
+    if (interaction.customId === "next") skip(guild_id);
+    else if (interaction.customId === "stop") stop(guild_id);
+    else if (interaction.customId === "prew") prew(guild_id);
   });
 };

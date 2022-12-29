@@ -1,16 +1,10 @@
-function r(bot) {
-  bot.on("voiceStateUpdate", (oldState, newState) => {
-    if (
-      oldState.channelId &&
-      !newState.channelId &&
-      oldState.id == bot.user.id
-    ) {
-      if (bot.servers[oldState.guild.id]) {
-        bot.servers[oldState.guild.id].dispatcher.stop();
-        bot.servers[oldState.guild.id] = null;
-        console.log(`Disconnected from voice in guild ${oldState.guild.name}`);
-      }
-    }
-  });
-}
-module.exports = r;
+const { Events } = require("discord.js");
+const { stop } = require("../modules/queue-control.js");
+
+module.exports = {
+  name: Events.VoiceStateUpdate,
+  execute(oldState, newState) {
+    if (oldState.member.user.bot && oldState.channelId && !newState.channelId)
+      stop(oldState.guild.id);
+  },
+};

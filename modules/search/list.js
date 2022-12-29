@@ -18,9 +18,9 @@ module.exports = (url) => {
         }
         page_token = res.data.nextPageToken;
       } while (page_token);
+      resolve(out);
     } catch (err) {
       reject("[list] " + err.response.data.error.message);
     }
-    resolve(out);
   });
 };

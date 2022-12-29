@@ -4,7 +4,6 @@ const separate_url = require("../modules/separate-url.js");
 const play = require("../modules/play-song.js");
 const queue = require("../modules/queue-control.js");
 const connect = require("../modules/connect.js");
-
 const search = require("../modules/search.js");
 
 module.exports = {
@@ -23,10 +22,10 @@ module.exports = {
     const member_id = interaction.member.id;
 
     if (!pre_check(interaction)) return;
-    //interaction.deferReply();
+    interaction.deferReply();
     try {
       const param = interaction.options.getString("url-or-name");
-      var id = await search(param);
+      var id = await search(param, guild_id, member_id);
 
       queue.create(guild_id);
       queue.push(guild_id, member_id, id);
@@ -34,11 +33,11 @@ module.exports = {
       if (!queue.connected(guild_id)) {
         connect(interaction.member.voice);
         queue.set_text(guild_id, interaction.channelId);
-        play(guild_id);
+        play(guild_id, queue.next(guild_id));
       }
-      //interaction.reply("👌");
+      interaction.editReply("👌");
     } catch (error) {
-      interaction.reply("Не вдалось нічого знайти");
+      interaction.editReply("Не вдалось нічого знайти");
       console.log(error);
     }
     /*
