@@ -9,7 +9,7 @@ module.exports = {
   async execute(interaction) {
     const guild_id = interaction.guild.id;
 
-    if (queue.connected(guild_id)) {
+    if (connected(guild_id)) {
       mix(guild_id);
       interaction.reply("👌");
     } else interaction.reply("Зараз нічого не грає 😔");

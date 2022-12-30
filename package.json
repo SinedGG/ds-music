@@ -25,6 +25,7 @@
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "mysql2": "^2.3.3",
     "sodium-native": "^3.4.1",
     "ytdl-core": "^4.11.2"
   }

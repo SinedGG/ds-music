@@ -48,20 +48,25 @@ module.exports = {
   },
 
   next: (guild_id) => {
-    var server = sessions[guild_id];
+    const server = sessions[guild_id];
+    if (!server) return undefined;
     const song = server.queue[server.position];
     sessions[guild_id].position++;
     return song;
   },
 
-  stop: async (guild_id) => {
-    await require("./remove-buttons.js")(guild_id);
-    sessions[guild_id].player.stop();
+  destroy: (guild_id) => {
     sessions[guild_id] = null;
+    console.log(`Destroyed in guild ${guild_id}`);
+  },
+
+  stop: async (guild_id) => {
+    sessions[guild_id].position = -1;
+    sessions[guild_id].player.stop();
+    //sessions[guild_id] = null;
     console.log(`Stopped in guild ${guild_id}`);
   },
   skip: async (guild_id, number) => {
-    await require("./remove-buttons.js")(guild_id);
     if (number) sessions[guild_id].position += number - 1;
     sessions[guild_id].player.stop();
     console.log(`Skipped in guild ${guild_id}`);
@@ -75,11 +80,11 @@ module.exports = {
   },
 
   mix: function (guild_id) {
-    var server = servers[message.guild.id];
-    for (var i = server.queue.url.length - 1; i > 0; i--) {
+    var server = sessions[guild_id];
+    for (var i = server.queue.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var temp = sessions[guild_id].queue[i];
-      sessions[guild_id].queue[i] = server.queue.url[j];
+      sessions[guild_id].queue[i] = server.queue[j];
       sessions[guild_id].queue[j] = temp;
     }
   },

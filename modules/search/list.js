@@ -1,9 +1,8 @@
 require("dotenv").config();
 const axios = require("axios");
 
-module.exports = (url) => {
+module.exports = (list_id) => {
   return new Promise(async (resolve, reject) => {
-    const list_id = new URL(url).searchParams.get("list");
     const api_key = process.env.YT_TOKEN;
     var out = [];
     var page_token = "";

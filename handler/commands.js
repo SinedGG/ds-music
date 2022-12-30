@@ -13,10 +13,6 @@ module.exports = async (bot) => {
     const command = require("." + filePath);
     if ("data" in command && "execute" in command) {
       bot.commands.set(command.data.name, command);
-    } else {
-      console.log(
-        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
-      );
     }
   }
 
@@ -37,17 +33,5 @@ module.exports = async (bot) => {
     } catch (error) {
       console.error(error);
     }
-  });
-
-  bot.on(Events.InteractionCreate, (interaction) => {
-    if (!interaction.isButton()) return;
-    console.log(interaction);
-    const guild_id = interaction.guild.id;
-
-    const { prew, stop, skip } = require("./queue-control.js");
-
-    if (interaction.customId === "next") skip(guild_id);
-    else if (interaction.customId === "stop") stop(guild_id);
-    else if (interaction.customId === "prew") prew(guild_id);
   });
 };

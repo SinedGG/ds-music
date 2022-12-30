@@ -21,12 +21,10 @@ module.exports = async (bot) => {
       console.log(
         `Started refreshing ${commands.length} application (/) commands.`
       );
-
       const data = await rest.put(
         Routes.applicationGuildCommands(process.env.DS_CLIENT_ID, guilds[i]),
         { body: commands }
       );
-
       console.log(
         `Successfully reloaded ${data.length} application (/) commands.`
       );

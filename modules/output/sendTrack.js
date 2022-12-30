@@ -30,10 +30,6 @@ module.exports = (info, requested, channel_id) => {
         value: `<@${requested}>`,
         inline: true,
       },
-      {
-        name: "Відвторити знову",
-        value: `[Клац](https://ds-music.sded.cf/play?guild=&url=${info.videoDetails.video_url})`,
-      },
       { name: "URL", value: info.videoDetails.video_url }
     )
     .setTimestamp();
@@ -43,10 +39,4 @@ module.exports = (info, requested, channel_id) => {
     const { set_message } = require("../queue-control.js");
     set_message(message.guildId, message.id);
   });
-  /*
-message.channel.send({ embeds: [embed] }).then((embedMessage) => {
-  servers[message.guild.id].last_message = embedMessage;
-  reactionPanel(embedMessage);
-});
-*/
 };

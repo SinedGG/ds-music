@@ -2,7 +2,8 @@ const { EmbedBuilder } = require("discord.js");
 const { get_text } = require("../queue-control.js");
 const bot = require("../../index.js");
 
-module.exports = (guild_id, requested, size) => {
+module.exports = (interaction, list_id, size) => {
+  const member_id = interaction.member.id;
   const embed = new EmbedBuilder()
     .setColor("#f6971c")
     .setAuthor({
@@ -13,11 +14,11 @@ module.exports = (guild_id, requested, size) => {
       "https://marketplace.canva.com/EAEdeiU-IeI/1/0/1600w/canva-purple-and-red-orange-tumblr-aesthetic-chill-acoustic-classical-lo-fi-playlist-cover-jGlDSM71rNM.jpg"
     )
     .addFields(
-      { name: "Кількість терків", value: size, inline: true },
-      { name: "Запит", value: `<@${requested}>`, inline: true },
-      { name: "URL", value: url }
+      { name: "Кількість треків", value: `${size}`, inline: true },
+      { name: "Запит", value: `<@${member_id}>`, inline: true },
+      { name: "URL", value: `https://www.youtube.com/playlist?list=${list_id}` }
     )
     .setTimestamp();
-  const channel = bot.channels.cache.get(get_text(guild_id));
-  channel.send({ embeds: [embed] });
+
+  interaction.channel.send({ embeds: [embed] });
 };

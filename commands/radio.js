@@ -1,10 +1,9 @@
 const { SlashCommandBuilder, Guild } = require("discord.js");
 const pre_check = require("../modules/check-voice-channel.js");
-const separate_url = require("../modules/separate-url.js");
 const play = require("../modules/play-song.js");
 const queue = require("../modules/queue-control.js");
 const connect = require("../modules/connect.js");
-const search = require("../modules/search.js");
+const search = require("../modules/search/radio.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,11 +21,14 @@ module.exports = {
     const member_id = interaction.member.id;
 
     if (!pre_check(interaction)) return;
-    interaction.deferReply();
+    await interaction.deferReply();
     try {
       const param = interaction.options.getString("url");
-      var id = await search(param, guild_id, member_id);
+      if (!param.includes("youtube.com") || !param.includes("youtu.be"))
+        interaction.editReply("Не вдалось нічого знайти");
 
+      const list_id = new URL(param).searchParams.get("v");
+      var id = await search("RDAMVM" + list_id);
       queue.create(guild_id);
       queue.push(guild_id, member_id, id);
 

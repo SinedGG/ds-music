@@ -24,8 +24,7 @@ function playSong(guild_id, song) {
     },
   })
     .on("error", (err) => {
-      console.log("ytdl err", err);
-      next(guild_id, connection);
+      console.log("ytdl err", err.message);
     })
     .on("info", (info) => {
       require("./output/sendTrack.js")(
@@ -34,22 +33,18 @@ function playSong(guild_id, song) {
         "699526377635971103"
       );
     });
-  const resource = createAudioResource(stream, {
-    inlineVolume: true,
-  });
+  const resource = createAudioResource(stream);
   server.player = createAudioPlayer();
   connection.subscribe(server.player);
   server.player.play(resource);
 
   server.player.on(AudioPlayerStatus.Idle, async () => {
-    next(guild_id, connection);
+    await require("./remove-buttons.js")(guild_id);
+    const song = queue.next(guild_id);
+    if (!song) return connection.destroy();
+    playSong(guild_id, song);
   });
-}
-
-function next(guild_id, connection) {
-  var song = queue.next(guild_id);
-  if (!song) return connection.destroy();
-  playSong(guild_id, song);
+  server.player.on("error", (err) => {});
 }
 
 module.exports = playSong;

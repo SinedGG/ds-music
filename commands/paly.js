@@ -1,6 +1,5 @@
-const { SlashCommandBuilder, Guild } = require("discord.js");
+const { SlashCommandBuilder } = require("discord.js");
 const pre_check = require("../modules/check-voice-channel.js");
-const separate_url = require("../modules/separate-url.js");
 const play = require("../modules/play-song.js");
 const queue = require("../modules/queue-control.js");
 const connect = require("../modules/connect.js");
@@ -18,15 +17,15 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    await interaction.deferReply();
+
     const guild_id = interaction.guild.id;
     const member_id = interaction.member.id;
 
     if (!pre_check(interaction)) return;
-    interaction.deferReply();
     try {
       const param = interaction.options.getString("url-or-name");
-      var id = await search(param, guild_id, member_id);
-
+      var id = await search(interaction, param);
       queue.create(guild_id);
       queue.push(guild_id, member_id, id);
 
@@ -40,14 +39,9 @@ module.exports = {
       interaction.editReply("Не вдалось нічого знайти");
       console.log(error);
     }
-    /*
-    const info = await ytdl.getBasicInfo(url, {
-      requestOptions: {
-        headers: {
-          cookie: process.env.COOKIE,
-        },
-      },
-    });
-    */
+
+    setTimeout(() => {
+      interaction.deleteReply().catch((e) => {});
+    }, 30000);
   },
 };
