@@ -30,7 +30,7 @@ function playSong(guild_id, song) {
       require("./output/sendTrack.js")(
         info,
         song.requested,
-        "699526377635971103"
+        queue.get_text(guild_id)
       );
     });
   const resource = createAudioResource(stream);

@@ -42,5 +42,8 @@ module.exports = {
       interaction.editReply("Не вдалось нічого знайти");
       console.log(error);
     }
+    setTimeout(() => {
+      interaction.deleteReply().catch((e) => {});
+    }, 30000);
   },
 };

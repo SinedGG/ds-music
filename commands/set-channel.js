@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const db = require("../db.js");
 module.exports = {
   data: new SlashCommandBuilder()
@@ -9,7 +9,8 @@ module.exports = {
         .setName("channel")
         .setDescription("Виберіть текстовий канал")
         .setRequired(true)
-    ),
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
     const channel = interaction.options.getChannel("channel");

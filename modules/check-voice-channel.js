@@ -3,7 +3,7 @@ const { PermissionsBitField } = require("discord.js");
 module.exports = (interaction) => {
   const voiceChannel = interaction.member.voice.channel;
   if (!voiceChannel) {
-    interaction.reply(
+    interaction.editReply(
       "Ви повинні перебувати у голосовому каналі щоб скористатись комндаю!"
     );
     return false;
@@ -12,14 +12,16 @@ module.exports = (interaction) => {
       .permissionsFor(interaction.guild.members.me)
       .has(PermissionsBitField.Flags.Connect)
   ) {
-    interaction.reply("У мене немає дозволу на приєднання до цього каналу!");
+    interaction.editReply(
+      "У мене немає дозволу на приєднання до цього каналу!"
+    );
     return false;
   } else if (
     !voiceChannel
       .permissionsFor(interaction.guild.members.me)
       .has(PermissionsBitField.Flags.Speak)
   ) {
-    interaction.reply("У мене немає дозволу говорити в цьому каналі!");
+    interaction.editReply("У мене немає дозволу говорити в цьому каналі!");
     return false;
   }
 
