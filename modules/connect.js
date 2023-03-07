@@ -16,5 +16,14 @@ module.exports = (voice) => {
       queue.set_voice(voice.channel.guild.id, voice.channel.id);
       resolve();
     });
+
+    connection.on("stateChange", (old_state, new_state) => {
+      if (
+        old_state.status === VoiceConnectionStatus.Ready &&
+        new_state.status === VoiceConnectionStatus.Connecting
+      ) {
+        connection.configureNetworking();
+      }
+    });
   });
 };
